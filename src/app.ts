@@ -27,7 +27,11 @@ export class App extends AppExpress {
     async configureServices(): Promise<void> {
         this.Provider.register(Env);
 
-        // Security middleware
+        this.Middleware.setErrorHandler({
+            showStackTrace: process.env.NODE_ENV === "development"
+        });
+        this.Middleware.addMiddleware(errorHandlerMiddleware);
+
         this.Middleware.addMiddleware(helmet());
         this.Middleware.addMiddleware(
             cors({
@@ -38,26 +42,18 @@ export class App extends AppExpress {
             }),
         );
 
-        // Performance middleware
         this.Middleware.addMiddleware(compression());
 
-        // Rate limiting
         const limiter = rateLimit({
-            windowMs: 15 * 60 * 1000, // 15 minutes
-            max: 100, // limit each IP to 100 requests per windowMs
+            windowMs: 15 * 60 * 1000,
+            max: 100,
             message: "Too many requests from this IP, please try again later.",
             standardHeaders: true,
             legacyHeaders: false,
         });
         this.Middleware.addMiddleware(limiter);
 
-        // Body parser
         this.Middleware.addBodyParser();
-
-        // Error handler
-        this.Middleware.setErrorHandler({
-            showStackTrace: process.env.NODE_ENV === "development",
-        });
 
         logger.info("Middleware configured successfully");
     }

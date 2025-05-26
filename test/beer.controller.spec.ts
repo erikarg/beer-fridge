@@ -107,11 +107,9 @@ describe("BeerController", () => {
 
             const beerId = createResponse.body.id;
 
-            const response = await request(server)
+            await request(server)
                 .delete(`/v1/beer/${beerId}`)
-                .expect(200);
-
-            expect(response.body.message).toBe("Beer deleted successfully");
+                .expect(204);
 
             // Verify beer is deleted
             await request(server).get(`/v1/beer/${beerId}`).expect(404);

@@ -8,23 +8,23 @@ datasource db {
 }
 
 model Beer {
-  id         Int          @id @default(autoincrement())
-  type       String
-  brand      String
-  volumeML   Int
-  quantity   Int
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  events     FridgeEvent[]
+  id        Int           @id @default(autoincrement())
+  type      String
+  brand     String
+  volumeML  Int
+  quantity  Int
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  events    FridgeEvent[]
 }
 
 model FridgeEvent {
-  id         Int          @id @default(autoincrement())
-  type       EventType
-  message    String?
-  createdAt  DateTime     @default(now())
-  beerId     Int?
-  beer       Beer?        @relation(fields: [beerId], references: [id])
+  id        Int       @id @default(autoincrement())
+  type      EventType
+  message   String?
+  createdAt DateTime  @default(now())
+  beerId    Int?
+  beer      Beer?     @relation(fields: [beerId], references: [id])
 }
 
 enum EventType {

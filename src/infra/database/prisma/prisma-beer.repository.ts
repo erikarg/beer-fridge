@@ -21,6 +21,16 @@ export class PrismaBeerRepository {
         return this.prisma.beer.findUnique({ where: { id } });
     }
 
+    async update(
+        id: number,
+        data: Partial<Omit<Beer, "id" | "createdAt" | "updatedAt">>,
+    ): Promise<Beer> {
+        return this.prisma.beer.update({
+            where: { id },
+            data,
+        });
+    }
+
     async delete(id: number): Promise<void> {
         await this.prisma.beer.delete({ where: { id } });
     }

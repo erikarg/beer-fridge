@@ -5,12 +5,17 @@ import {
     Get,
     param,
     Post,
+    Put,
 } from "@expressots/adapter-express";
 import { inject } from "@expressots/core";
 
 import { CreateBeerUseCase } from "../useCases/create-beer.usecase";
+import { UpdateBeerUseCase } from "../useCases/update-beer.usecase";
+import { GetBeerByIdUseCase } from "../useCases/get-beer-by-id.usecase";
+import { DeleteBeerUseCase } from "../useCases/delete-beer.usecase";
 import { BeerService } from "../services/beer.service";
 import { CreateBeerDto } from "../dtos/create-beer.dto";
+import { UpdateBeerDto } from "../dtos/update-beer.dto";
 import { BeerResponseDto } from "../dtos/beer-response.dto";
 import { NotFoundException } from "../../../common/exceptions/app.exception";
 import { logger } from "../../../common/utils/logger";
@@ -19,6 +24,9 @@ import { logger } from "../../../common/utils/logger";
 export class BeerController {
     constructor(
         @inject(CreateBeerUseCase) private createBeer: CreateBeerUseCase,
+        @inject(UpdateBeerUseCase) private updateBeer: UpdateBeerUseCase,
+        @inject(GetBeerByIdUseCase) private getBeerById: GetBeerByIdUseCase,
+        @inject(DeleteBeerUseCase) private deleteBeer: DeleteBeerUseCase,
         @inject(BeerService) private beerService: BeerService,
     ) {}
 
@@ -59,7 +67,7 @@ export class BeerController {
     async getById(@param("id") id: number): Promise<BeerResponseDto> {
         try {
             logger.info("Fetching beer by ID", { id });
-            const beer = await this.beerService.getBeerById(id);
+            const beer = await this.getBeerById.execute(id);
 
             if (!beer) {
                 throw new NotFoundException(`Beer with ID ${id} not found`);
@@ -76,18 +84,40 @@ export class BeerController {
         }
     }
 
+    @Put("/:id")
+    async update(@param("id") id: number, @body() body: UpdateBeerDto): Promise<BeerResponseDto> {
+        try {
+            logger.info("Updating beer", { id, updates: body });
+
+            const existingBeer = await this.getBeerById.execute(id);
+            if (!existingBeer) {
+                throw new NotFoundException(`Beer with ID ${id} not found`);
+            }
+
+            const updatedBeer = await this.updateBeer.execute(id, body);
+            logger.info("Beer updated successfully", { id });
+
+            return updatedBeer;
+        } catch (error) {
+            logger.error("Failed to update beer", {
+                id,
+                error: error instanceof Error ? error.message : "Unknown error",
+            });
+            throw error;
+        }
+    }
+
     @Delete("/:id")
     async delete(@param("id") id: number): Promise<{ message: string }> {
         try {
             logger.info("Deleting beer", { id });
 
-            // Check if beer exists first
-            const existingBeer = await this.beerService.getBeerById(id);
+            const existingBeer = await this.getBeerById.execute(id);
             if (!existingBeer) {
                 throw new NotFoundException(`Beer with ID ${id} not found`);
             }
 
-            await this.beerService.deleteBeer(id);
+            await this.deleteBeer.execute(id);
             logger.info("Beer deleted successfully", { id });
 
             return { message: "Beer deleted successfully" };

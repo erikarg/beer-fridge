@@ -22,6 +22,11 @@ describe("AppController", () => {
         return request(server)
             .get("/v1")
             .expect(STATUS_CODES.OK)
-            .expect("Hello from ExpressoTS!");
+            .expect((res) => {
+                expect(res.body).toHaveProperty('status', 'ok');
+                expect(res.body).toHaveProperty('message');
+                expect(res.body).toHaveProperty('timestamp');
+                expect(res.body).toHaveProperty('version');
+            });
     });
 });

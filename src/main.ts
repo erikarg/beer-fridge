@@ -10,7 +10,7 @@ async function bootstrap() {
 
         await app.listen(env.PORT, {
             appName: env.APP_NAME,
-            appVersion: env.APP_VERSION,
+            appVersion: env.APP_VERSION
         });
 
         logger.info("🚀 Server started successfully", {
