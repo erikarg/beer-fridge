@@ -1,12 +1,14 @@
 import { injectable, inject } from "@expressots/core";
 
-import { BeerService } from "../services/beer.service";
+import { PrismaBeerRepository } from "../../../infra/database/prisma/prisma-beer.repository";
 
 @injectable()
 export class DeleteBeerUseCase {
-    constructor(@inject(BeerService) private beerService: BeerService) {}
+    constructor(
+        @inject(PrismaBeerRepository) private beerRepo: PrismaBeerRepository,
+    ) {}
 
     async execute(id: number): Promise<void> {
-        return this.beerService.deleteBeer(id);
+        return this.beerRepo.delete(id);
     }
-} 
+}

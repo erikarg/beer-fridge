@@ -37,4 +37,4 @@ describe("OpenFridgeUseCase", () => {
         });
         expect(result).toEqual(mockBeers);
     });
-}); 
+});

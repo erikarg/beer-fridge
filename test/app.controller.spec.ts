@@ -1,7 +1,7 @@
-import { AppFactory } from "../node_modules/@expressots/core";
-import { IWebServerBuilder } from "../node_modules/@expressots/shared/lib/cjs/types";
+import { AppFactory } from "@expressots/core";
+import { IWebServerBuilder } from "@expressots/shared/lib/cjs/types";
 import request from "supertest";
-import { Server, STATUS_CODES } from "http";
+import { Server } from "http";
 import { App } from "../src/app";
 
 describe("AppController", () => {
@@ -21,12 +21,12 @@ describe("AppController", () => {
     it("returns a valid AppResponse", async () => {
         return request(server)
             .get("/v1")
-            .expect(STATUS_CODES.OK)
+            .expect(200)
             .expect((res) => {
-                expect(res.body).toHaveProperty('status', 'ok');
-                expect(res.body).toHaveProperty('message');
-                expect(res.body).toHaveProperty('timestamp');
-                expect(res.body).toHaveProperty('version');
+                expect(res.body).toHaveProperty("status", "ok");
+                expect(res.body).toHaveProperty("message");
+                expect(res.body).toHaveProperty("timestamp");
+                expect(res.body).toHaveProperty("version");
             });
     });
 });

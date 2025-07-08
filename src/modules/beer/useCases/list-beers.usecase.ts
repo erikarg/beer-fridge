@@ -1,12 +1,14 @@
 import { inject, injectable } from "@expressots/core";
 
-import { BeerService } from "../services/beer.service";
+import { PrismaBeerRepository } from "../../../infra/database/prisma/prisma-beer.repository";
 
 @injectable()
 export class ListBeersUseCase {
-    constructor(@inject(BeerService) private beerService: BeerService) {}
+    constructor(
+        @inject(PrismaBeerRepository) private beerRepo: PrismaBeerRepository,
+    ) {}
 
     async execute() {
-        return this.beerService.getAllBeers();
+        return this.beerRepo.findAll();
     }
 }

@@ -26,7 +26,6 @@ export function errorHandlerMiddleware(
         return;
     }
 
-    // Log unexpected errors
     logger.error("Unexpected error occurred", {
         error: error.message,
         stack: error.stack,

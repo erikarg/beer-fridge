@@ -13,7 +13,7 @@ import { CreateBeerUseCase } from "../useCases/create-beer.usecase";
 import { UpdateBeerUseCase } from "../useCases/update-beer.usecase";
 import { GetBeerByIdUseCase } from "../useCases/get-beer-by-id.usecase";
 import { DeleteBeerUseCase } from "../useCases/delete-beer.usecase";
-import { BeerService } from "../services/beer.service";
+import { ListBeersUseCase } from "../useCases/list-beers.usecase";
 import { CreateBeerDto } from "../dtos/create-beer.dto";
 import { UpdateBeerDto } from "../dtos/update-beer.dto";
 import { BeerResponseDto } from "../dtos/beer-response.dto";
@@ -27,7 +27,7 @@ export class BeerController {
         @inject(UpdateBeerUseCase) private updateBeer: UpdateBeerUseCase,
         @inject(GetBeerByIdUseCase) private getBeerById: GetBeerByIdUseCase,
         @inject(DeleteBeerUseCase) private deleteBeer: DeleteBeerUseCase,
-        @inject(BeerService) private beerService: BeerService,
+        @inject(ListBeersUseCase) private listBeers: ListBeersUseCase,
     ) {}
 
     @Post("/")
@@ -50,24 +50,17 @@ export class BeerController {
 
     @Get("/")
     async list(): Promise<BeerResponseDto[]> {
-        try {
-            logger.info("Fetching all beers");
-            const beers = await this.beerService.getAllBeers();
-            logger.info("Beers fetched successfully", { count: beers.length });
-            return beers;
-        } catch (error) {
-            logger.error("Failed to fetch beers", {
-                error: error instanceof Error ? error.message : "Unknown error",
-            });
-            throw error;
-        }
+        logger.info("Fetching all beers");
+        const beers = await this.listBeers.execute();
+        logger.info("Beers fetched successfully", { count: beers.length });
+        return beers;
     }
 
     @Get("/:id")
-    async getById(@param("id") id: number): Promise<BeerResponseDto> {
+    async getById(@param("id") id: string): Promise<BeerResponseDto> {
         try {
             logger.info("Fetching beer by ID", { id });
-            const beer = await this.getBeerById.execute(id);
+            const beer = await this.getBeerById.execute(Number(id));
 
             if (!beer) {
                 throw new NotFoundException(`Beer with ID ${id} not found`);
@@ -85,16 +78,19 @@ export class BeerController {
     }
 
     @Put("/:id")
-    async update(@param("id") id: number, @body() body: UpdateBeerDto): Promise<BeerResponseDto> {
+    async update(
+        @param("id") id: string,
+        @body() body: UpdateBeerDto,
+    ): Promise<BeerResponseDto> {
         try {
             logger.info("Updating beer", { id, updates: body });
 
-            const existingBeer = await this.getBeerById.execute(id);
+            const existingBeer = await this.getBeerById.execute(Number(id));
             if (!existingBeer) {
                 throw new NotFoundException(`Beer with ID ${id} not found`);
             }
 
-            const updatedBeer = await this.updateBeer.execute(id, body);
+            const updatedBeer = await this.updateBeer.execute(Number(id), body);
             logger.info("Beer updated successfully", { id });
 
             return updatedBeer;
@@ -108,16 +104,16 @@ export class BeerController {
     }
 
     @Delete("/:id")
-    async delete(@param("id") id: number): Promise<{ message: string }> {
+    async delete(@param("id") id: string): Promise<{ message: string }> {
         try {
             logger.info("Deleting beer", { id });
 
-            const existingBeer = await this.getBeerById.execute(id);
+            const existingBeer = await this.getBeerById.execute(Number(id));
             if (!existingBeer) {
                 throw new NotFoundException(`Beer with ID ${id} not found`);
             }
 
-            await this.deleteBeer.execute(id);
+            await this.deleteBeer.execute(Number(id));
             logger.info("Beer deleted successfully", { id });
 
             return { message: "Beer deleted successfully" };

@@ -32,4 +32,4 @@ export class UpdateBeerDto {
     @IsPositive({ message: "Quantity must be a positive number" })
     @Transform(({ value }) => parseInt(value))
     quantity?: number;
-} 
+}

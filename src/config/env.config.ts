@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 
 import { logger } from "../common/utils/logger";
 
-// Load environment variables
 dotenv.config({ path: ".env" });
 
 interface EnvConfig {

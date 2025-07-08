@@ -28,9 +28,9 @@ export class App extends AppExpress {
         this.Provider.register(Env);
 
         this.Middleware.setErrorHandler({
-            showStackTrace: process.env.NODE_ENV === "development"
+            errorHandler: errorHandlerMiddleware,
+            showStackTrace: process.env.NODE_ENV === "development",
         });
-        this.Middleware.addMiddleware(errorHandlerMiddleware);
 
         this.Middleware.addMiddleware(helmet());
         this.Middleware.addMiddleware(

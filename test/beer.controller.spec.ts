@@ -41,10 +41,10 @@ describe("BeerController", () => {
 
         it("should return 400 for invalid beer data", async () => {
             const invalidBeerData = {
-                type: "", // Invalid: too short
+                type: "",
                 brand: "Test Brewery",
-                volumeML: -500, // Invalid: negative
-                quantity: "invalid", // Invalid: not a number
+                volumeML: -500,
+                quantity: "invalid",
             };
 
             await request(server)
@@ -64,7 +64,6 @@ describe("BeerController", () => {
 
     describe("GET /v1/beer/:id", () => {
         it("should return a beer by ID", async () => {
-            // First create a beer
             const beerData = {
                 type: "Lager",
                 brand: "Test Brewery 2",
@@ -93,7 +92,6 @@ describe("BeerController", () => {
 
     describe("DELETE /v1/beer/:id", () => {
         it("should delete a beer by ID", async () => {
-            // First create a beer
             const beerData = {
                 type: "Stout",
                 brand: "Test Brewery 3",
@@ -107,11 +105,8 @@ describe("BeerController", () => {
 
             const beerId = createResponse.body.id;
 
-            await request(server)
-                .delete(`/v1/beer/${beerId}`)
-                .expect(204);
+            await request(server).delete(`/v1/beer/${beerId}`).expect(204);
 
-            // Verify beer is deleted
             await request(server).get(`/v1/beer/${beerId}`).expect(404);
         });
 

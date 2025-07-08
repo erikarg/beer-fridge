@@ -13,9 +13,6 @@
         "rootDir": "./",
         "baseUrl": "./",
         "paths": {
-            "@entities/*": ["src/entities/*"],
-            "@providers/*": ["src/providers/*"],
-            "@repositories/*": ["src/repositories/*"],
             "@useCases/*": ["src/useCases/*"],
             "@expressots/*": ["node_modules/@expressots/*"]
         },
@@ -33,4 +30,4 @@
     "ts-node": {
         "require": ["tsconfig-paths/register"]
     }
-}
+} 
