@@ -39,7 +39,7 @@ pnpm dev
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET` | `/v1/health` | Health check |
+| `GET` | `/v1` | Health check |
 | `GET` | `/v1/beer` | List all beers |
 | `GET` | `/v1/beer/:id` | Get beer by ID |
 | `POST` | `/v1/beer` | Create new beer |
