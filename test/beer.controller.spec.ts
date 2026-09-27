@@ -110,6 +110,28 @@ describe("BeerController", () => {
         });
     });
 
+    describe("PUT /v1/beer/:id", () => {
+        it("should return 200 with the updated beer", async () => {
+            const createResponse = await request(server).post("/v1/beer").send({
+                type: "Pilsner",
+                brand: "Test Brewery 4",
+                volumeML: 350,
+                quantity: 10,
+            });
+
+            const beerId = createResponse.body.id;
+
+            const response = await request(server)
+                .put(`/v1/beer/${beerId}`)
+                .send({ quantity: 8 })
+                .expect(200);
+
+            expect(response.body.id).toBe(beerId);
+            expect(response.body.quantity).toBe(8);
+            expect(response.body.type).toBe("Pilsner");
+        });
+    });
+
     describe("DELETE /v1/beer/:id", () => {
         it("should delete a beer by ID", async () => {
             const beerData = {

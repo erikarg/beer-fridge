@@ -3,6 +3,7 @@ import {
     controller,
     Delete,
     Get,
+    Http,
     param,
     Post,
     Put,
@@ -81,6 +82,7 @@ export class BeerController {
     }
 
     @Put("/:id")
+    @Http(200)
     async update(
         @param("id") id: string,
         @body() payload: UpdateBeerDto,
