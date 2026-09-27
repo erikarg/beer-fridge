@@ -1,5 +1,5 @@
 import { AppExpress } from "@expressots/adapter-express";
-import { AppContainer, Env, injectable } from "@expressots/core";
+import { AppContainer, injectable } from "@expressots/core";
 import { AppModule } from "@useCases/app/app.module";
 import helmet from "helmet";
 import cors from "cors";
@@ -15,18 +15,9 @@ export class App extends AppExpress {
 
     async globalConfiguration(): Promise<void> {
         this.setGlobalRoutePrefix("/v1");
-
-        this.initEnvironment("development", {
-            env: {
-                development: ".env",
-                production: ".env",
-            },
-        });
     }
 
     async configureServices(): Promise<void> {
-        this.Provider.register(Env);
-
         this.Middleware.setErrorHandler({
             errorHandler: errorHandlerMiddleware,
             showStackTrace: process.env.NODE_ENV === "development",
@@ -59,8 +50,6 @@ export class App extends AppExpress {
     }
 
     async postServerInitialization(): Promise<void> {
-        this.Provider.get(Env).checkFile(".env");
-
         logger.info("Application initialized successfully", {
             environment: process.env.NODE_ENV,
             port: process.env.PORT,
