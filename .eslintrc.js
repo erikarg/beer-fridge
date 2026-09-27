@@ -1,5 +1,9 @@
 module.exports = {
     parser: "@typescript-eslint/parser",
+    parserOptions: {
+        project: "./tsconfig.json",
+        tsconfigRootDir: __dirname,
+    },
     plugins: ["@typescript-eslint/eslint-plugin"],
     extends: [
         "plugin:@typescript-eslint/recommended",
@@ -19,7 +23,11 @@ module.exports = {
         ],
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/no-explicit-any": "warn",
-        "@typescript-eslint/prefer-nullish-coalescing": "error",
+        "@typescript-eslint/prefer-nullish-coalescing": [
+            "error",
+            // Env vars are strings: `||` intentionally falls back on "" too.
+            { ignorePrimitives: { string: true } },
+        ],
         "@typescript-eslint/prefer-optional-chain": "error",
 
         // General rules
@@ -29,14 +37,6 @@ module.exports = {
         "prefer-const": "error",
 
         // Prettier integration
-        "prettier/prettier": [
-            "error",
-            {
-                singleQuote: true,
-                trailingComma: "es5",
-                tabWidth: 2,
-                semi: true,
-            },
-        ],
+        "prettier/prettier": "error",
     },
 };
