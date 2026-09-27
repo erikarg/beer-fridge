@@ -19,7 +19,7 @@ describe("FridgeController", () => {
 
         const result = await controller.openFridge({ userId: "user123" });
 
-        expect(mockUseCase.execute).toHaveBeenCalledWith("user123");
+        expect(mockUseCase.execute).toHaveBeenCalledWith({ userId: "user123" });
         expect(result).toEqual(
             expect.objectContaining({
                 success: true,

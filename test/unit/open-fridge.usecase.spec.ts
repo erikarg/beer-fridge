@@ -2,6 +2,7 @@ import { OpenFridgeUseCase } from "../../src/modules/fridge/useCases/open-fridge
 import { PrismaBeerRepository } from "../../src/infra/database/prisma/prisma-beer.repository";
 import { PrismaFridgeEventRepository } from "../../src/infra/database/prisma/prisma-fridge-event.repository";
 import { EventType } from "@prisma/client";
+import { ValidationException } from "../../src/common/exceptions/app.exception";
 
 describe("OpenFridgeUseCase", () => {
     let useCase: OpenFridgeUseCase;
@@ -28,7 +29,7 @@ describe("OpenFridgeUseCase", () => {
         mockEventRepo.create.mockResolvedValue({} as any);
         mockBeerRepo.findAll.mockResolvedValue(mockBeers as any);
 
-        const result = await useCase.execute("user123");
+        const result = await useCase.execute({ userId: "user123" });
 
         expect(mockEventRepo.create).toHaveBeenCalledWith({
             type: EventType.OPENED,
@@ -36,5 +37,13 @@ describe("OpenFridgeUseCase", () => {
             beerId: null,
         });
         expect(result).toEqual(mockBeers);
+    });
+
+    it("should reject a non-string userId without recording an event", async () => {
+        await expect(
+            useCase.execute({ userId: 42 } as any),
+        ).rejects.toBeInstanceOf(ValidationException);
+        expect(mockEventRepo.create).not.toHaveBeenCalled();
+        expect(mockBeerRepo.findAll).not.toHaveBeenCalled();
     });
 });

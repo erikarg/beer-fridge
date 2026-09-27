@@ -3,6 +3,8 @@ import { EventType } from "@prisma/client";
 
 import { PrismaBeerRepository } from "../../../infra/database/prisma/prisma-beer.repository";
 import { PrismaFridgeEventRepository } from "../../../infra/database/prisma/prisma-fridge-event.repository";
+import { validateDto } from "../../../common/utils/validate-dto";
+import { OpenFridgeDto } from "../dtos/open-fridge.dto";
 
 @injectable()
 export class OpenFridgeUseCase {
@@ -13,7 +15,9 @@ export class OpenFridgeUseCase {
         private readonly fridgeEventRepo: PrismaFridgeEventRepository,
     ) {}
 
-    async execute(userId?: string) {
+    async execute(data: OpenFridgeDto) {
+        const { userId } = await validateDto(OpenFridgeDto, data);
+
         await this.fridgeEventRepo.create({
             type: EventType.OPENED,
             message: userId

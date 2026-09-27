@@ -16,7 +16,7 @@ export class FridgeController {
     async openFridge(@body() payload: OpenFridgeDto) {
         try {
             logger.info("Opening fridge", { userId: payload.userId });
-            const result = await this.openFridgeUseCase.execute(payload.userId);
+            const result = await this.openFridgeUseCase.execute(payload);
             logger.info("Fridge opened successfully", {
                 userId: payload.userId,
                 beerCount: result.length,
