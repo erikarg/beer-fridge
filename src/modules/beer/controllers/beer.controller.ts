@@ -17,7 +17,10 @@ import { ListBeersUseCase } from "../useCases/list-beers.usecase";
 import { CreateBeerDto } from "../dtos/create-beer.dto";
 import { UpdateBeerDto } from "../dtos/update-beer.dto";
 import { BeerResponseDto } from "../dtos/beer-response.dto";
-import { NotFoundException } from "../../../common/exceptions/app.exception";
+import {
+    NotFoundException,
+    ValidationException,
+} from "../../../common/exceptions/app.exception";
 import { logger } from "../../../common/utils/logger";
 
 @controller("/beer")
@@ -60,7 +63,7 @@ export class BeerController {
     async getById(@param("id") id: string): Promise<BeerResponseDto> {
         try {
             logger.info("Fetching beer by ID", { id });
-            const beer = await this.getBeerById.execute(Number(id));
+            const beer = await this.getBeerById.execute(this.parseId(id));
 
             if (!beer) {
                 throw new NotFoundException(`Beer with ID ${id} not found`);
@@ -85,15 +88,13 @@ export class BeerController {
         try {
             logger.info("Updating beer", { id, updates: payload });
 
-            const existingBeer = await this.getBeerById.execute(Number(id));
+            const beerId = this.parseId(id);
+            const existingBeer = await this.getBeerById.execute(beerId);
             if (!existingBeer) {
                 throw new NotFoundException(`Beer with ID ${id} not found`);
             }
 
-            const updatedBeer = await this.updateBeer.execute(
-                Number(id),
-                payload,
-            );
+            const updatedBeer = await this.updateBeer.execute(beerId, payload);
             logger.info("Beer updated successfully", { id });
 
             return updatedBeer;
@@ -111,12 +112,13 @@ export class BeerController {
         try {
             logger.info("Deleting beer", { id });
 
-            const existingBeer = await this.getBeerById.execute(Number(id));
+            const beerId = this.parseId(id);
+            const existingBeer = await this.getBeerById.execute(beerId);
             if (!existingBeer) {
                 throw new NotFoundException(`Beer with ID ${id} not found`);
             }
 
-            await this.deleteBeer.execute(Number(id));
+            await this.deleteBeer.execute(beerId);
             logger.info("Beer deleted successfully", { id });
 
             return { message: "Beer deleted successfully" };
@@ -127,5 +129,13 @@ export class BeerController {
             });
             throw error;
         }
+    }
+
+    private parseId(id: string): number {
+        const parsed = Number(id);
+        if (!Number.isInteger(parsed) || parsed <= 0) {
+            throw new ValidationException("Beer ID must be a positive integer");
+        }
+        return parsed;
     }
 }

@@ -94,6 +94,20 @@ describe("BeerController", () => {
         it("should return 404 for non-existent beer", async () => {
             await request(server).get("/v1/beer/99999").expect(404);
         });
+
+        it("should return 400 with a validation error for a non-numeric ID", async () => {
+            const response = await request(server)
+                .get("/v1/beer/abc")
+                .expect(400);
+
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    success: false,
+                    statusCode: 400,
+                    message: "Beer ID must be a positive integer",
+                }),
+            );
+        });
     });
 
     describe("DELETE /v1/beer/:id", () => {
