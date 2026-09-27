@@ -123,6 +123,9 @@ export class BeerController {
             await this.deleteBeer.execute(beerId);
             logger.info("Beer deleted successfully", { id });
 
+            // ExpressoTS only sends a response when the handler returns a value
+            // (returning undefined leaves the request hanging). DELETE defaults
+            // to 204, so this body is discarded and clients get no content.
             return { message: "Beer deleted successfully" };
         } catch (error) {
             logger.error("Failed to delete beer", {

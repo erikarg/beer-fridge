@@ -151,6 +151,7 @@ pnpm test:watch
 **3. Rough edges found in this POC**
 - `initEnvironment` and `Env.checkFile` call `process.exit(1)` when there is no `.env` file, which breaks test runs and containers configured only through environment variables (this API loads and validates env in `src/config/env.config.ts` instead)
 - `PUT`/`PATCH`/`DELETE` default to `204`, so a returned body is silently dropped unless the route sets `@Http(200)`
+- A handler must still return a value: the Express adapter only sends a response when the result is not `undefined`, so a `void` handler leaves the request hanging (`DELETE /v1/beer/:id` returns a body that the `204` discards for this reason)
 - The opinionated build expects a `register-path.js` in the project root to resolve path aliases in production
 - `@expressots/shared` requires `chalk` at runtime but only declares it as a dev dependency, so production installs must add it explicitly
 - `@Get("/health")` on the root `@controller("/")` is not reachable (`GET /v1/health` returns 404), so `/v1` is used as health check
