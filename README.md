@@ -221,3 +221,7 @@ curl -X POST http://localhost:3000/v1/fridge/open \
 ---
 
 **Built with 🐎, ❤️ and 🍺**
+
+## License
+
+MIT — see [LICENSE](LICENSE).
