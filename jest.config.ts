@@ -6,6 +6,8 @@ const jestConfig: JestConfigWithTsJest = {
     testEnvironment: "node",
     verbose: true,
     automock: false,
+    // Integration suites read DATABASE_URL from the environment or .env.
+    setupFiles: ["dotenv/config"],
     testMatch: ["**/*.test.ts", "**/*.spec.ts"],
     coverageDirectory: "./coverage",
     coverageReporters: ["text", "html", "json"],

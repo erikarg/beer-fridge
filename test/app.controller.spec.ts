@@ -10,7 +10,7 @@ describe("AppController", () => {
 
     beforeAll(async () => {
         webServerBuilder = await AppFactory.create(App);
-        const app = await webServerBuilder.listen(3000);
+        const app = await webServerBuilder.listen(0);
         server = await app.getHttpServer();
     });
 

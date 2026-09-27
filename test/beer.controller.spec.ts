@@ -9,13 +9,19 @@ describe("BeerController", () => {
     let webServerBuilder: IWebServerBuilder;
 
     beforeAll(async () => {
+        if (!process.env.DATABASE_URL) {
+            throw new Error(
+                "DATABASE_URL is not set. These tests need a migrated PostgreSQL database: set it in .env or the environment (see README > Testing).",
+            );
+        }
+
         webServerBuilder = await AppFactory.create(App);
-        const app = await webServerBuilder.listen(3001);
+        const app = await webServerBuilder.listen(0);
         server = await app.getHttpServer();
     });
 
     afterAll(async () => {
-        await server.close();
+        await server?.close();
     });
 
     describe("POST /v1/beer", () => {
