@@ -1,5 +1,5 @@
 import { inject, injectable } from "@expressots/core";
-import { FridgeEvent, EventType } from "@prisma/client";
+import { FridgeEvent } from "@prisma/client";
 
 import { PrismaService } from "./prisma.service";
 

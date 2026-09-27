@@ -16,10 +16,10 @@ export class CreateBeerUseCase {
         const dto = await validateDto(CreateBeerDto, data);
 
         const beerData: Omit<Beer, "id" | "createdAt" | "updatedAt"> = {
-            type: data.type,
-            brand: data.brand,
-            volumeML: data.volumeML,
-            quantity: data.quantity,
+            type: dto.type,
+            brand: dto.brand,
+            volumeML: dto.volumeML,
+            quantity: dto.quantity,
         };
 
         return this.beerRepo.create(beerData);

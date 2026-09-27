@@ -7,7 +7,7 @@ export function errorHandlerMiddleware(
     error: Error,
     req: Request,
     res: Response,
-    next: NextFunction,
+    _next: NextFunction,
 ): void {
     if (error instanceof AppException) {
         logger.warn(`Operational error: ${error.message}`, {

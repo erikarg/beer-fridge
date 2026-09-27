@@ -35,7 +35,7 @@ export class App extends AppExpress {
         this.Middleware.addMiddleware(helmet());
         this.Middleware.addMiddleware(
             cors({
-                origin: process.env.ALLOWED_ORIGINS?.split(",") || [
+                origin: process.env.ALLOWED_ORIGINS?.split(",") ?? [
                     "http://localhost:3000",
                 ],
                 credentials: true,

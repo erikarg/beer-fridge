@@ -13,12 +13,12 @@ export class FridgeController {
     ) {}
 
     @Post("/open")
-    async openFridge(@body() body: OpenFridgeDto) {
+    async openFridge(@body() payload: OpenFridgeDto) {
         try {
-            logger.info("Opening fridge", { userId: body.userId });
-            const result = await this.openFridgeUseCase.execute(body.userId);
+            logger.info("Opening fridge", { userId: payload.userId });
+            const result = await this.openFridgeUseCase.execute(payload.userId);
             logger.info("Fridge opened successfully", {
-                userId: body.userId,
+                userId: payload.userId,
                 beerCount: result.length,
             });
             return {
@@ -29,7 +29,7 @@ export class FridgeController {
             };
         } catch (error) {
             logger.error("Failed to open fridge", {
-                userId: body.userId,
+                userId: payload.userId,
                 error: error instanceof Error ? error.message : "Unknown error",
             });
             throw error;

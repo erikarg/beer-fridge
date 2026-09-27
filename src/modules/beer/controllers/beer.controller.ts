@@ -31,13 +31,13 @@ export class BeerController {
     ) {}
 
     @Post("/")
-    async create(@body() body: CreateBeerDto): Promise<BeerResponseDto> {
+    async create(@body() payload: CreateBeerDto): Promise<BeerResponseDto> {
         try {
             logger.info("Creating new beer", {
-                type: body.type,
-                brand: body.brand,
+                type: payload.type,
+                brand: payload.brand,
             });
-            const beer = await this.createBeer.execute(body);
+            const beer = await this.createBeer.execute(payload);
             logger.info("Beer created successfully", { id: beer.id });
             return beer;
         } catch (error) {
@@ -80,17 +80,20 @@ export class BeerController {
     @Put("/:id")
     async update(
         @param("id") id: string,
-        @body() body: UpdateBeerDto,
+        @body() payload: UpdateBeerDto,
     ): Promise<BeerResponseDto> {
         try {
-            logger.info("Updating beer", { id, updates: body });
+            logger.info("Updating beer", { id, updates: payload });
 
             const existingBeer = await this.getBeerById.execute(Number(id));
             if (!existingBeer) {
                 throw new NotFoundException(`Beer with ID ${id} not found`);
             }
 
-            const updatedBeer = await this.updateBeer.execute(Number(id), body);
+            const updatedBeer = await this.updateBeer.execute(
+                Number(id),
+                payload,
+            );
             logger.info("Beer updated successfully", { id });
 
             return updatedBeer;
